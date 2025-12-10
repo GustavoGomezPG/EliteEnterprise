@@ -80,6 +80,7 @@ window.loaderAnimation = loaderAnimation;
 // Make animator function globally available
 window.animator = animator;
 
+
 // Initialize Barba.js page transitions
 initPageTransitions(
 	barba,

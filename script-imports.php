@@ -16,8 +16,19 @@ class ThemeScripts
 
   function __construct()
   {
+    // Ensure wp-i18n is loaded for Elementor compatibility
+    add_action('wp_enqueue_scripts', array($this, 'enqueue_wp_i18n'));
+    add_action('admin_enqueue_scripts', array($this, 'enqueue_wp_i18n'));
     // Add Vite dev server script tags to wp_head
     add_action('wp_head', array($this, 'add_vite_dev_server_tags'), 1);
+  }
+
+  /**
+   * Enqueue WordPress i18n script for sprintf and other functions
+   */
+  public function enqueue_wp_i18n()
+  {
+    wp_enqueue_script('wp-i18n');
   }
 
   /**

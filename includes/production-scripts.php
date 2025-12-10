@@ -17,8 +17,17 @@ class ThemeProductionScripts
   function __construct()
   {
     add_action('elementor/frontend/after_register_scripts', array($this, 'register_theme_scripts'));
+    add_action('admin_enqueue_scripts', array($this, 'enqueue_wp_i18n'));
     add_filter('script_loader_tag', array($this, 'add_module_type_attribute'), 10, 3);
     $this->load_manifest();
+  }
+
+  /**
+   * Enqueue WordPress i18n script for sprintf and other functions
+   */
+  public function enqueue_wp_i18n()
+  {
+    wp_enqueue_script('wp-i18n');
   }
 
   /**
@@ -82,7 +91,7 @@ class ThemeProductionScripts
       wp_enqueue_script(
         'elite-theme-main',
         $main_js,
-        array('jquery'),
+        array('jquery', 'wp-i18n'),
         HELLO_ELEMENTOR_VERSION,
         true
       );
@@ -91,7 +100,7 @@ class ThemeProductionScripts
       wp_enqueue_script(
         'elite-theme-main',
         get_template_directory_uri() . '/dist/js/main.min.js',
-        array('jquery'),
+        array('jquery', 'wp-i18n'),
         HELLO_ELEMENTOR_VERSION,
         true
       );

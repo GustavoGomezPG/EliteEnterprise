@@ -43,48 +43,51 @@ function executeInlineScripts(container) {
 function enterAnimation(e) {
 	return new Promise((resolve) => {
 		jQuery("a").each(function () {
-			// make links not clickable if already on the same url taking into consideration relative and absolute paths
-			// This whole thing needs to be revised and optimized, I'm sure this code is really brittle
-			// get the sub page from url
-			const subPage = window.location.pathname.split("/")[1];
-			const websiteURL = window.backend_data.site_info.site_url;
+			const href = jQuery(this).attr("href");
+			if (!href) return;
 
-			// check if the link is an absolute path
-			if (
-				jQuery(this).attr("href").includes(websiteURL) &&
-				jQuery(this).attr("href").split("/").length <= 5
-			) {
-				// check if the link is the same as the current page
-				if (subPage && jQuery(this).attr("href").includes(subPage)) {
-					jQuery(this).addClass("elementor-item-active");
-					jQuery(this).addClass("current-menu-item");
-					jQuery(this).addClass("current_page_item");
-					jQuery(this).click((event) => {
-						event.preventDefault();
-					});
-				}
-			} else {
-				// check if the link is the same as the current page
-				if (
-					subPage &&
-					jQuery(this).attr("href").split("/")[1]?.includes(subPage) &&
-					jQuery(this).attr("href").split("/").length <= 5
-				) {
-					jQuery(this).addClass("elementor-item-active");
-					jQuery(this).addClass("current-menu-item");
-					jQuery(this).addClass("current_page_item");
-					jQuery(this).click((event) => {
-						event.preventDefault();
-					});
-				}
+			// Normalize URLs for comparison
+			const currentURL = window.location.href.replace(/\/$/, ""); // Remove trailing slash
+			const currentPath = window.location.pathname.replace(/\/$/, "");
+			const linkURL = href.replace(/\/$/, "");
+			
+			// Parse link URL
+			let linkPath;
+			try {
+				const url = new URL(linkURL, window.location.origin);
+				linkPath = url.pathname.replace(/\/$/, "");
+			} catch {
+				// Relative URL
+				linkPath = linkURL.replace(/\/$/, "");
+			}
+
+			// Check if link points to current page
+			const isCurrentPage = 
+				linkURL === currentURL || // Exact match
+				linkURL === currentPath || // Path match
+				linkPath === currentPath || // Normalized path match
+				(currentPath === "" && (linkPath === "" || linkPath === "/")); // Home page
+
+			if (isCurrentPage) {
+				jQuery(this).addClass("elementor-item-active");
+				jQuery(this).addClass("current-menu-item");
+				jQuery(this).addClass("current_page_item");
+				jQuery(this).off("click").on("click", (event) => {
+					event.preventDefault();
+				});
 			}
 		});
-		// slide menu down
-		gsap.to("#site-header", {
-			duration: 0.5,
-			y: "0",
-			ease: "power3.inOut",
-		});
+
+		// Slide menu down if header exists
+		const header = document.querySelector("#site-header");
+		if (header) {
+			gsap.to("#site-header", {
+				duration: 0.5,
+				y: "0",
+				opacity: 1,
+				ease: "power3.inOut",
+			});
+		}
 
 		// fade in content
 		gsap.set(e, { opacity: 0, display: "block" });
@@ -122,12 +125,18 @@ function leaveAnimation(e) {
 
 	return new Promise((resolve) => {
 		remove_all_active_menu_items();
-		// slide menu up
-		gsap.to("#site-header", {
-			duration: 0.5,
-			y: "-100%",
-			ease: "power3.inOut",
-		});
+		
+		// Slide menu up if header exists
+		const header = document.querySelector("#site-header");
+		if (header) {
+			gsap.to("#site-header", {
+				duration: 0.5,
+				y: "-100%",
+				opacity: 0,
+				ease: "power3.inOut",
+			});
+		}
+		
 		gsap
 			.fromTo(
 				e,
@@ -161,7 +170,6 @@ export function initPageTransitions(
 	barba,
 	gsap,
 	loaderAnimation,
-	animator,
 	removeParallax,
 	removeResizeObservers,
 ) {
@@ -203,7 +211,7 @@ export function initPageTransitions(
 				// Don't remove Vite-injected style tags or main.css link
 				const isViteStyle = currentEl.tagName === 'STYLE' && 
 					(currentEl.getAttribute('data-vite-dev-id') || 
-					 currentEl.textContent.includes('@import'));
+				currentEl.textContent.includes('@import'));
 				const isMainCSS = currentEl.tagName === 'LINK' && 
 					currentEl.href && currentEl.href.includes('main.css');
 				
@@ -258,10 +266,14 @@ export function initPageTransitions(
 			{
 				sync: false,
 				once: async ({ next }) => {
-					gsap.set("#site-header", {
-						y: "-100%",
-						ease: "power3.inOut",
-					});
+					// Set initial header position if it exists
+					const header = document.querySelector("#site-header");
+					if (header) {
+						gsap.set("#site-header", {
+							opacity: 0,
+							y: "-100%",
+						});
+					}
 					await loaderAnimation();
 					return enterAnimation(next.container);
 				},

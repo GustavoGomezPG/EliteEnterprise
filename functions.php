@@ -32,6 +32,14 @@ if (dist_folder_exists()) {
 // Load data localizer to share PHP data with JavaScript
 require_once('includes/DataLocalizer.php');
 
+// Disable wp-auth-check on frontend only (not in editor/admin)
+add_action('wp_enqueue_scripts', function () {
+	if (!is_admin() && !defined('ELEMENTOR_VERSION')) {
+		remove_action('admin_enqueue_scripts', 'wp_auth_check_load');
+		add_filter('wp_auth_check_load', '__return_false');
+	}
+});
+
 if (!isset($content_width)) {
 	$content_width = 800; // Pixels.
 }
