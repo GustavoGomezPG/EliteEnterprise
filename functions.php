@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-define('HELLO_ELEMENTOR_VERSION', '3.2.1');
+define('HELLO_ELEMENTOR_VERSION', '1.0.0');
 
 /**
  * Check if the dist folder exists
@@ -29,7 +29,8 @@ if (dist_folder_exists()) {
 	require_once('script-imports.php');
 }
 
-require_once('data-localizer.php');
+// Load data localizer to share PHP data with JavaScript
+require_once('includes/DataLocalizer.php');
 
 if (!isset($content_width)) {
 	$content_width = 800; // Pixels.

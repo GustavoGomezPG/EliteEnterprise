@@ -10,7 +10,7 @@ export function initPreloader(lottie) {
     renderer: "svg",
     loop: false,
     autoplay: false,
-    path: `${window.backend_data.site_info.site_url}/wp-content/themes/EliteEnterprise/assets/lottie/intro.json`,
+    path: `${window.backend_data.site_info.theme_url}/assets/lottie/intro.json`,
     rendererSettings: {
       progressiveLoad: false
     }
@@ -31,7 +31,7 @@ export function initPreloader(lottie) {
         // Fade out SVG first
         gsap.to(svg, {
           opacity: 0,
-          duration: 1,
+          duration: 0.5,
           ease: "power2.inOut",
           onComplete: () => {
             // Then fade out preloader background
@@ -39,6 +39,7 @@ export function initPreloader(lottie) {
               opacity: 0,
               duration: 0.5,
               ease: "power2.inOut",
+              delay: 0.2,
               onComplete: () => {
                 gsap.set(preloaderElement, { display: "none" });
                 resolve();
