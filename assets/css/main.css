@@ -1,0 +1,158 @@
+/* Tailwind CSS 5 - No config needed! */
+@import "tailwindcss";
+
+/* Source directives - Tell Tailwind where to scan for classes */
+@source "../../*.php";
+@source "../../template-parts/**/*.php";
+@source "../../includes/**/*.php";
+@source "../js/**/*.js";
+
+/* Custom Theme Styles */
+
+@theme {
+  --breakpoint-xs: 425px;
+  --breakpoint-nav: 1150px;
+  --breakpoint-2xl: 1440px;
+  --breakpoint-3xl: 1536px;
+  --spacing-xs: 5px;
+  --spacing-sm: 10px;
+  --spacing-md: 15px;
+  --spacing-lg: 20px;
+  --spacing-xl: 50px;
+  --z-auto: auto;
+  --z-0: 0;
+  --z-1: 1;
+  --z-2: 2;
+  --z-3: 3;
+  --z-4: 4;
+  --z-5: 5;
+  --z-6: 6;
+  --z-7: 7;
+  --z-8: 8;
+  --z-9: 9;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+}
+
+@utility container {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0 auto;
+
+  @variant sm {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  @variant lg {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+@utility inner-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  padding-left: 24px;
+  padding-right: 24px;
+
+  @variant xl {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+/* End Tailwind config
+------------------------------------------------------------------------------------------------------------
+  Start Global CSS
+  Add your global styles inside the base layer so they don't override the Tailwind styles.
+------------------------------------------------------------------------------------------------------------
+ */
+
+@layer base {
+  * {
+    font-family: "Open Sans", sans-serif;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
+  /* Preloader styles */
+
+  #page-preloader {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    transition: opacity 0.5s ease;
+    opacity: 1;
+    z-index: 9999;
+  }
+
+  #page-preloader svg {
+    transition: opacity 1s ease;
+    max-width: 500px;
+  }
+
+  /* main default style */
+  #site-main-wrapper {
+    opacity: 0;
+  }
+
+  .skip-link {
+    opacity: 0;
+  }
+
+  /* Card Glare Hover effect */
+
+  .glow-card > div > img {
+    position: relative;
+  }
+
+  .glow-card > div.elementor-widget-container {
+    width: fit-content !important;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+      rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  }
+
+  .glow-card > div > .glare {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+  }
+
+  .elementor-item-active,
+  .elementor-item-active .elementor-icon-list-icon svg,
+  .elementor-item-active .elementor-icon-list-text {
+    pointer-events: none;
+    color: #65b0d7;
+    fill: #65b0d7;
+  }
+}
+/* End Global CSS */

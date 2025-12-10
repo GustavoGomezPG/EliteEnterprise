@@ -1,0 +1,29 @@
+{
+	"name": "elite-dental-enterprise-theme",
+	"version": "1.0.0",
+	"description": "Elite Dental Enterprise Theme for WordPress with Elementor",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@barba/core": "^2.10.3",
+		"gsap": "^3.12.7",
+		"lenis": "^1.1.17",
+		"lottie-web": "^5.12.2",
+		"split-type": "^0.3.4",
+		"tailwindcss": "^4.0.0"
+	},
+	"author": "Gustavo Gomez",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/GustavoGomez092/Elementor-barba"
+	},
+	"devDependencies": {
+		"@tailwindcss/vite": "^4.1.17",
+		"vite": "^7.2.7"
+	}
+}
