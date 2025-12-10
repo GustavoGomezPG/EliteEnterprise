@@ -78,8 +78,9 @@ export default defineConfig({
 	},
 
 	server: {
-		// Port for dev server
+		// Port for dev server (forced to 3000)
 		port: 3000,
+		strictPort: true, // Exit if port 3000 is already in use
 
 		// Automatically open browser
 		open: false,
@@ -90,6 +91,7 @@ export default defineConfig({
 		// HMR options
 		hmr: {
 			host: "localhost",
+			port: 3000,
 		},
 
 		// Proxy settings if needed
