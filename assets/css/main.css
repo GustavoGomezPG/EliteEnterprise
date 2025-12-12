@@ -1,5 +1,6 @@
 /* Tailwind CSS 5 - No config needed! */
 @import "tailwindcss";
+@import "basecoat-css";
 
 /* Source directives - Tell Tailwind where to scan for classes */
 @source "../../*.php";
@@ -14,11 +15,6 @@
   --breakpoint-nav: 1150px;
   --breakpoint-2xl: 1440px;
   --breakpoint-3xl: 1536px;
-  --spacing-xs: 5px;
-  --spacing-sm: 10px;
-  --spacing-md: 15px;
-  --spacing-lg: 20px;
-  --spacing-xl: 50px;
   --z-auto: auto;
   --z-0: 0;
   --z-1: 1;
@@ -74,6 +70,12 @@
  */
 
 @layer base {
+  body {
+    min-height: 100vh;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+  }
   * {
     font-family: "Open Sans", sans-serif;
   }
@@ -145,6 +147,131 @@
     left: 0;
     top: 0;
     pointer-events: none;
+  }
+
+  /* Alert styles */
+  .alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid;
+    display: block !important;
+  }
+
+  .alert-success {
+    background-color: rgb(220 252 231);
+    border-color: rgb(134 239 172);
+    color: rgb(22 101 52);
+  }
+
+  .alert-danger {
+    background-color: rgb(254 226 226);
+    border-color: rgb(252 165 165);
+    color: rgb(153 27 27);
+  }
+
+  .alert ul {
+    width: 100% !important;
+    display: block !important;
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .alert ul.list-disc {
+    list-style-type: disc;
+  }
+
+  .alert ul.list-inside {
+    list-style-position: inside;
+    padding-left: 0;
+  }
+
+  .alert li {
+    margin-bottom: 0.25rem;
+    display: list-item !important;
+    width: auto !important;
+    word-wrap: break-word;
+    white-space: normal !important;
+    text-align: left;
+  }
+
+  .alert li:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Dynamic Menu Widget Styles */
+.dynamic-menu-widget {
+  /* Container */
+  nav,
+  div {
+    width: 100%;
+  }
+
+  /* Main menu list */
+  ul.dynamic-menu,
+  .dynamic-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Top level menu items */
+  > nav > ul > li,
+  > ul > li {
+    position: relative;
+  }
+
+  /* Menu links */
+  a {
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  /* Submenu container */
+  ul ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 0.5rem 0;
+    margin: 0;
+    z-index: 10;
+  }
+
+  /* Show submenu on hover */
+  li:hover > ul {
+    display: block;
+  }
+
+  /* Submenu items */
+  ul ul li {
+    display: block;
+    width: 100%;
+  }
+
+  /* Submenu links */
+  ul ul a {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+  }
+
+  /* Current menu item indicator */
+  .current-menu-item > a,
+  .current_page_item > a {
+    font-weight: 600;
   }
 }
 /* End Global CSS */

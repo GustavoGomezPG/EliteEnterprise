@@ -11,6 +11,11 @@ if (!defined('ABSPATH')) {
 
 define('HELLO_ELEMENTOR_VERSION', '1.0.0');
 
+
+// Load ElementorWidgets auto-loader for Elementor widgets in includes/elementor/*
+require_once get_template_directory() . '/includes/ElementorWidgets.php';
+ElementorWidgets::enqueue();
+
 /**
  * Check if the dist folder exists
  * This determines if we're in production (dist exists) or development mode
@@ -31,6 +36,9 @@ if (dist_folder_exists()) {
 
 // Load data localizer to share PHP data with JavaScript
 require_once('includes/DataLocalizer.php');
+
+// Load Member class for custom member role functionality
+require_once('includes/Member.php');
 
 // Disable wp-auth-check on frontend only (not in editor/admin)
 add_action('wp_enqueue_scripts', function () {
@@ -271,4 +279,26 @@ add_filter('site_transient_update_themes', 'remove_update_themes');
 function remove_update_themes($_value)
 {
 	return null;
+}
+
+/**
+ * Allow logout without confirmation
+ */
+add_action('check_admin_referer', 'logout_without_confirm', 10, 2);
+function logout_without_confirm($action, $result)
+{
+
+	if ($action == "log-out" && !isset($_GET['_wpnonce'])) {
+		$redirect_to = isset($_REQUEST['redirect_to']) ? $_REQUEST['redirect_to'] : 'url-you-want-to-redirect';
+		$location = str_replace('&amp;', '&', wp_logout_url($redirect_to));
+		header("Location: $location");
+		die;
+	}
+}
+
+add_filter('wp_login_errors', 'my_logout_message');
+function my_logout_message($errors)
+{
+	$errors->remove('loggedout');
+	return $errors;
 }

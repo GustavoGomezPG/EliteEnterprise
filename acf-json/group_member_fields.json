@@ -1,0 +1,224 @@
+{
+	"key": "group_member_fields",
+	"title": "Member Profile Fields",
+	"fields": [
+		{
+			"key": "field_member_phone",
+			"label": "Phone Number",
+			"name": "member_phone",
+			"type": "text",
+			"instructions": "Member's contact phone number",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "(555) 123-4567",
+			"prepend": "",
+			"append": "",
+			"maxlength": ""
+		},
+		{
+			"key": "field_member_date_of_birth",
+			"label": "Date of Birth",
+			"name": "member_date_of_birth",
+			"type": "date_picker",
+			"instructions": "Member's date of birth",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"display_format": "m/d/Y",
+			"return_format": "Y-m-d",
+			"first_day": 0
+		},
+		{
+			"key": "field_member_company",
+			"label": "Company",
+			"name": "member_company",
+			"type": "text",
+			"instructions": "Member's company or organization",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "",
+			"prepend": "",
+			"append": "",
+			"maxlength": ""
+		},
+		{
+			"key": "field_member_job_title",
+			"label": "Job Title",
+			"name": "member_job_title",
+			"type": "text",
+			"instructions": "Member's job title or position",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "",
+			"prepend": "",
+			"append": "",
+			"maxlength": ""
+		},
+		{
+			"key": "field_member_address",
+			"label": "Address",
+			"name": "member_address",
+			"type": "textarea",
+			"instructions": "Member's mailing address",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "Street Address, City, State, ZIP",
+			"maxlength": "",
+			"rows": 3,
+			"new_lines": "br"
+		},
+		{
+			"key": "field_member_bio",
+			"label": "Biography",
+			"name": "member_bio",
+			"type": "wysiwyg",
+			"instructions": "Member's biography or description",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"tabs": "all",
+			"toolbar": "basic",
+			"media_upload": 0,
+			"delay": 0
+		},
+		{
+			"key": "field_member_profile_image",
+			"label": "Profile Image",
+			"name": "member_profile_image",
+			"type": "image",
+			"instructions": "Member's profile photo",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "33.33",
+				"class": "",
+				"id": ""
+			},
+			"return_format": "array",
+			"preview_size": "medium",
+			"library": "all",
+			"min_width": "",
+			"min_height": "",
+			"min_size": "",
+			"max_width": "",
+			"max_height": "",
+			"max_size": "",
+			"mime_types": "jpg,jpeg,png,webp"
+		},
+		{
+			"key": "field_member_status",
+			"label": "Membership Status",
+			"name": "member_status",
+			"type": "select",
+			"instructions": "Current membership status",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "33.33",
+				"class": "",
+				"id": ""
+			},
+			"choices": {
+				"active": "Active",
+				"pending": "Pending",
+				"suspended": "Suspended",
+				"expired": "Expired"
+			},
+			"default_value": "active",
+			"allow_null": 0,
+			"multiple": 0,
+			"ui": 1,
+			"ajax": 0,
+			"return_format": "value",
+			"placeholder": ""
+		},
+		{
+			"key": "field_member_join_date",
+			"label": "Join Date",
+			"name": "member_join_date",
+			"type": "date_picker",
+			"instructions": "Date member joined",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "33.33",
+				"class": "",
+				"id": ""
+			},
+			"display_format": "m/d/Y",
+			"return_format": "Y-m-d",
+			"first_day": 0
+		},
+		{
+			"key": "field_member_notes",
+			"label": "Admin Notes",
+			"name": "member_notes",
+			"type": "textarea",
+			"instructions": "Internal notes about this member (admin only)",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "",
+			"maxlength": "",
+			"rows": 4,
+			"new_lines": "br"
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "user_role",
+				"operator": "==",
+				"value": "member"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"hide_on_screen": "",
+	"active": true,
+	"description": "Custom fields for Member user role",
+	"show_in_rest": 0,
+	"modified": 1733961600
+}

@@ -7,36 +7,106 @@
 const elementExistsInArray = (element, array) =>
 	array.some((el) => el.isEqualNode(element));
 
-// Re-execute all inline scripts
+// Re-execute inline scripts from the new page
 function executeInlineScripts(container) {
-	const elementorElements = [
-		"script#elementor-js",
-		"script#elementor-pro-js",
-		"script#elementor-frontend-js",
-		"script#elementor-frontend-js-before",
-		"script#elementor-frontend-js-after",
-		"script#elementor-frontend-js-before-legacy",
-		"script#elementor-frontend-js-after-legacy",
-		"script#elementor-frontend-js-before-vendors",
-		"script#elementor-frontend-js-after-vendors",
-		"script#elementor-frontend-js-before-legacy",
-		"script#elementor-frontend-js-after-legacy",
-		"script#imagesloaded-js",
-		"script#swiper-js",
-		"script#elementor-gallery-js",
-	];
-	const scripts = container.body.querySelectorAll(elementorElements.join(","));
-	scripts.forEach((script) => {
-		const newScript = document.createElement("script");
-		if (script.src) {
-			newScript.src = script.src;
-			newScript.async = true;
-		} else {
-			newScript.textContent = script.textContent;
+	// Get all script tags from the incoming container
+	const scripts = container.querySelectorAll('script');
+
+	scripts.forEach((oldScript) => {
+		// Skip non-executable script types (JSON data, etc.)
+		const scriptType = oldScript.getAttribute('type');
+		if (scriptType && scriptType !== 'text/javascript' && scriptType !== 'module') {
+			// Skip JSON, speculationrules, etc.
+			return;
 		}
 
-		document.body.appendChild(newScript);
-		script.remove(); // Remove old script to avoid duplication
+		// Skip scripts that shouldn't be re-executed
+		const skipPatterns = [
+			'wpData', // Skip wpData - it's in the head
+			'window.backend_data', // Skip backend_data - it's in the head
+			'gtag', // Skip Google Analytics
+			'google-analytics',
+			'facebook',
+			'fbevents',
+			'updateLoginLogoutWidgets', // Skip our login/logout widget - already handled
+			'updateDynamicMenus', // Skip our dynamic menu widget - already handled
+		];
+
+		const shouldSkip = skipPatterns.some(pattern =>
+			oldScript.textContent.includes(pattern) ||
+			(oldScript.src && oldScript.src.includes(pattern))
+		);
+
+		if (shouldSkip) {
+			return;
+		}
+
+		// For external scripts with src
+		if (oldScript.src) {
+			// Skip external scripts - they're already loaded
+			return;
+		}
+
+		// For inline scripts, execute in an isolated scope to avoid redeclaration errors
+		try {
+			let scriptContent = oldScript.textContent;
+
+			// Unwrap DOM ready listeners since DOM is already loaded during transitions
+			// This handles many common patterns used by WordPress plugins and themes
+
+			const patterns = [
+				// document.addEventListener('DOMContentLoaded', function() { ... });
+				/document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*\)\s*;?/,
+
+				// document.addEventListener('DOMContentLoaded', () => { ... });
+				/document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*\([^)]*\)\s*=>\s*\{([\s\S]*)\}\s*\)\s*;?/,
+
+				// window.addEventListener('DOMContentLoaded', function() { ... });
+				/window\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*\)\s*;?/,
+
+				// window.addEventListener('load', function() { ... });
+				/window\.addEventListener\s*\(\s*['"]load['"]\s*,\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*\)\s*;?/,
+
+				// window.onload = function() { ... };
+				/window\.onload\s*=\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*;?/,
+
+				// jQuery(document).ready(function() { ... });
+				/jQuery\s*\(\s*document\s*\)\.ready\s*\(\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*\)\s*;?/,
+
+				// $(document).ready(function() { ... });
+				/\$\s*\(\s*document\s*\)\.ready\s*\(\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*\)\s*;?/,
+
+				// jQuery(function() { ... });
+				/jQuery\s*\(\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*\)\s*;?/,
+
+				// $(function() { ... });
+				/^\s*\$\s*\(\s*function\s*\([^)]*\)\s*\{([\s\S]*)\}\s*\)\s*;?\s*$/,
+
+				// if (document.readyState === 'loading') { ... } else { ... }
+				/if\s*\(\s*document\.readyState\s*===\s*['"]loading['"]\s*\)\s*\{[^}]*\}\s*else\s*\{([\s\S]*?)\}/,
+
+				// if (document.readyState !== 'loading') { ... }
+				/if\s*\(\s*document\.readyState\s*!==\s*['"]loading['"]\s*\)\s*\{([\s\S]*?)\}\s*(?:else\s*\{[^}]*\}\s*)?;?/,
+			];
+
+			// Try each pattern until we find a match
+			let match = null;
+			for (const pattern of patterns) {
+				match = scriptContent.match(pattern);
+				if (match && match[1]) {
+					// Found a DOM ready wrapper - extract and execute the inner code
+					scriptContent = match[1].trim();
+					break;
+				}
+			}
+
+			// Use Function constructor to execute in a new scope
+			// This prevents "identifier already declared" errors
+			const scriptFunction = new Function(scriptContent);
+			scriptFunction();
+		} catch {
+			// Silent fail for inline script execution errors
+		}
 	});
 }
 
@@ -221,10 +291,8 @@ export function initPageTransitions(
 				}
 			});
 
-			// Re-execute Elementor inline scripts if Elementor page
-			if (bodyClasses.includes("elementor-page")) {
-				executeInlineScripts(nextElement);
-			}
+			// Re-execute ALL inline scripts from the new page
+			executeInlineScripts(nextElement.body);
 		}
 
 		// ALLOW ELEMENTOR VIDEOS TO AUTOPLAY AFTER TRANSITION
@@ -247,6 +315,11 @@ export function initPageTransitions(
 			if (typeof lazyloadRunObserver !== "undefined") {
 				lazyloadRunObserver();
 			}
+		}
+
+		// Reinitialize Remember Me auto-fill for login page
+		if (typeof window.initRememberMe !== "undefined") {
+			window.initRememberMe();
 		}
 	});
 

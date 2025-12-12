@@ -18,6 +18,25 @@ class DataLocalizer
   public function __construct()
   {
     add_action('wp_enqueue_scripts', array($this, 'localize_data'));
+    add_action('wp_head', array($this, 'add_wpdata_early'), 1);
+  }
+
+  /**
+   * Add wpData to head early for member login/logout functionality
+   */
+  public function add_wpdata_early()
+  {
+    $wp_data = array(
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      // Use user ID -1 for login nonce to make it work for both logged-in and logged-out users
+      'loginNonce' => wp_create_nonce('member_login_action_-1'),
+      'logoutNonce' => wp_create_nonce('member_logout_action'),
+    );
+    ?>
+    <script>
+      window.wpData = <?php echo wp_json_encode($wp_data); ?>;
+    </script>
+    <?php
   }
 
   /**
@@ -49,6 +68,24 @@ class DataLocalizer
     wp_add_inline_script(
       $script_name,
       'window.' . $script_name . ' = ' . wp_json_encode($theme_data),
+      'before'
+    );
+
+    // Create wpData object for member login/logout functionality
+    $wp_data = array(
+      'ajaxUrl' => admin_url('admin-ajax.php'),
+      // Use user ID -1 for login nonce to make it work for both logged-in and logged-out users
+      'loginNonce' => wp_create_nonce('member_login_action_-1'),
+      'logoutNonce' => wp_create_nonce('member_logout_action'),
+    );
+
+    // Register and add wpData
+    $wpdata_script = 'wpdata';
+    wp_register_script($wpdata_script, '');
+    wp_enqueue_script($wpdata_script);
+    wp_add_inline_script(
+      $wpdata_script,
+      'window.wpData = ' . wp_json_encode($wp_data),
       'before'
     );
   }

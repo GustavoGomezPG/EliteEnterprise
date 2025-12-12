@@ -13,7 +13,7 @@
 
 // Import main CSS (includes Tailwind CSS 5)
 import "../css/main.css";
-
+import 'basecoat-css/all';
 // ===========================
 // External Dependencies
 // ===========================
@@ -64,6 +64,10 @@ import {
 import { initPageTransitions } from "./page-transitions.js";
 // Import Preloader
 import { initPreloader } from "./preloader.js";
+// Import Member Login Handler
+import "./member-login.js";
+// Import Member Logout Handler
+import "./member-logout.js";
 
 // ===========================
 // Initialize Theme
