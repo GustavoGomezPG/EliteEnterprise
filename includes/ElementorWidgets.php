@@ -20,21 +20,31 @@ class ElementorWidgets
    */
   public static function enqueue()
   {
-    // Register the custom category
-    add_action('elementor/elements/categories_registered', [__CLASS__, 'register_member_category']);
+    // Register the custom categories
+    add_action('elementor/elements/categories_registered', [__CLASS__, 'register_custom_categories']);
     // Register widgets
     add_action('elementor/widgets/register', [__CLASS__, 'register_widgets']);
   }
 
   /**
-   * Register custom Elementor widget category for Member widgets
+   * Register custom Elementor widget categories
    */
-  public static function register_member_category($elements_manager) {
+  public static function register_custom_categories($elements_manager) {
+    // Member widgets category
     $elements_manager->add_category(
       'member-widgets',
       [
         'title' => __('Member widgets', 'elite-enterprise'),
         'icon' => 'eicon-lock-user',
+      ]
+    );
+
+    // Collaborator widgets category
+    $elements_manager->add_category(
+      'collaborator-widgets',
+      [
+        'title' => __('Collaborator widgets', 'elite-enterprise'),
+        'icon' => 'eicon-person',
       ]
     );
   }
@@ -51,6 +61,12 @@ class ElementorWidgets
       require_once $member_file;
     }
 
+    // Load Collaborator class if it exists (needed for collaborator widgets)
+    $collaborator_file = get_template_directory() . '/includes/Collaborator.php';
+    if (file_exists($collaborator_file)) {
+      require_once $collaborator_file;
+    }
+
     $widgets_dir = get_template_directory() . '/includes/elementor/';
     if (!is_dir($widgets_dir)) {
       return;
@@ -64,10 +80,6 @@ class ElementorWidgets
         $class_name = self::get_widget_class_from_file($file);
         if ($class_name && class_exists($class_name)) {
           $widget_instance = new $class_name();
-          // If the widget has a set_categories method, set it to 'member-widgets'
-          if (method_exists($widget_instance, 'set_categories')) {
-            $widget_instance->set_categories(['member-widgets']);
-          }
           $widgets_manager->register($widget_instance);
         }
       }

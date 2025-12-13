@@ -1,0 +1,135 @@
+{
+	"key": "group_collaborator_fields",
+	"title": "Collaborator Profile Fields",
+	"fields": [
+		{
+			"key": "field_collaborator_company_name",
+			"label": "Company Name",
+			"name": "collaborator_company_name",
+			"type": "text",
+			"instructions": "Collaborator's company or organization name",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "ACME Corporation",
+			"prepend": "",
+			"append": "",
+			"maxlength": ""
+		},
+		{
+			"key": "field_collaborator_company_website",
+			"label": "Company Website",
+			"name": "collaborator_company_website",
+			"type": "url",
+			"instructions": "Collaborator's company website URL",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "https://example.com"
+		},
+		{
+			"key": "field_collaborator_company_address",
+			"label": "Company Address",
+			"name": "collaborator_company_address",
+			"type": "textarea",
+			"instructions": "Collaborator's company address",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "Street Address, City, State, ZIP",
+			"maxlength": "",
+			"rows": 3,
+			"new_lines": "br"
+		},
+		{
+			"key": "field_collaborator_company_phone",
+			"label": "Company Phone",
+			"name": "collaborator_company_phone",
+			"type": "text",
+			"instructions": "Collaborator's company contact phone number",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "(555) 123-4567",
+			"prepend": "",
+			"append": "",
+			"maxlength": ""
+		},
+		{
+			"key": "field_collaborator_company_email",
+			"label": "Company Email",
+			"name": "collaborator_company_email",
+			"type": "email",
+			"instructions": "Collaborator's company contact email",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"placeholder": "contact@company.com",
+			"prepend": "",
+			"append": ""
+		},
+		{
+			"key": "field_collaborator_company_description",
+			"label": "Company Description",
+			"name": "collaborator_company_description",
+			"type": "wysiwyg",
+			"instructions": "Brief description of the collaborator's company",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "",
+			"tabs": "all",
+			"toolbar": "basic",
+			"media_upload": 0,
+			"delay": 0
+		}
+	],
+	"location": [
+		[
+			{
+				"param": "user_role",
+				"operator": "==",
+				"value": "collaborator"
+			}
+		]
+	],
+	"menu_order": 0,
+	"position": "normal",
+	"style": "default",
+	"label_placement": "top",
+	"instruction_placement": "label",
+	"hide_on_screen": "",
+	"active": true,
+	"description": "Custom fields for Collaborator user role",
+	"show_in_rest": 0,
+	"modified": 1733961600
+}

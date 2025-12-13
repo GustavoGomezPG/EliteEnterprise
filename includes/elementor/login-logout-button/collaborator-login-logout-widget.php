@@ -1,9 +1,8 @@
 <?php
 /**
- * Elementor Widget: Member Login/Logout Button
+ * Elementor Widget: Collaborator Login/Logout Button
  *
- * Provides a login/logout button for use in Elementor, following the Member system's routing and logic.
- * Place this file in the theme's includes/ directory and load it from functions.php.
+ * Provides a login/logout button for collaborators in Elementor.
  *
  * @package EliteEnterprise
  * @since 1.0.0
@@ -16,16 +15,16 @@ if (!defined('ABSPATH')) {
 use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 
-class Member_Login_Logout_Widget extends Widget_Base
+class Collaborator_Login_Logout_Widget extends Widget_Base
 {
   public function get_name()
   {
-    return 'member-login-logout';
+    return 'collaborator-login-logout';
   }
 
   public function get_title()
   {
-    return __('Member Login/Logout', 'elite-enterprise');
+    return __('Collaborator Login/Logout', 'elite-enterprise');
   }
 
   public function get_icon()
@@ -35,7 +34,7 @@ class Member_Login_Logout_Widget extends Widget_Base
 
   public function get_categories()
   {
-    return ['member-widgets'];
+    return ['collaborator-widgets'];
   }
 
   protected function register_controls()
@@ -64,14 +63,14 @@ class Member_Login_Logout_Widget extends Widget_Base
   {
     $is_logged_in = is_user_logged_in();
     $current_user = wp_get_current_user();
-    $is_member = Member::is_user_member($current_user->ID);
-    $login_url = Member::get_login_url();
-    $logout_url = wp_logout_url(home_url());
+    $is_collaborator = Collaborator::is_user_collaborator($current_user->ID);
+    $login_url = Collaborator::get_login_url();
+    $logout_url = wp_logout_url(Collaborator::get_login_url());
 
     // Output widget container with data attributes for JavaScript
-    echo '<div class="member-login-logout-widget" data-login-url="' . esc_attr($login_url) . '" data-logout-url="' . esc_attr($logout_url) . '">';
+    echo '<div class="collaborator-login-logout-widget" data-login-url="' . esc_attr($login_url) . '" data-logout-url="' . esc_attr($logout_url) . '">';
 
-    if ($is_logged_in && $is_member) {
+    if ($is_logged_in && $is_collaborator) {
       // Show logout button as button element (no href to prevent navigation)
       echo '<button type="button" class="btn btn-logout" data-logout-url="' . esc_attr($logout_url) . '">Logout</button>';
     } else {
@@ -85,8 +84,8 @@ class Member_Login_Logout_Widget extends Widget_Base
     ?>
     <script>
       (function () {
-        function updateLoginLogoutButtons() {
-          const widgets = document.querySelectorAll('.member-login-logout-widget');
+        function updateCollaboratorLoginLogoutButtons() {
+          const widgets = document.querySelectorAll('.collaborator-login-logout-widget');
           if (!widgets.length) return;
 
           const isLoggedIn = document.body.classList.contains('logged-in');
@@ -106,25 +105,25 @@ class Member_Login_Logout_Widget extends Widget_Base
           });
 
           // Re-initialize logout handlers after updating widget content
-          if (window.initMemberLogout) {
-            window.initMemberLogout();
+          if (window.initCollaboratorLogout) {
+            window.initCollaboratorLogout();
           }
         }
 
         // Make function globally available
-        window.updateLoginLogoutWidgets = updateLoginLogoutButtons;
+        window.updateCollaboratorLoginLogoutWidgets = updateCollaboratorLoginLogoutButtons;
 
         // Update on page load
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', updateLoginLogoutButtons);
+          document.addEventListener('DOMContentLoaded', updateCollaboratorLoginLogoutButtons);
         } else {
-          updateLoginLogoutButtons();
+          updateCollaboratorLoginLogoutButtons();
         }
 
         // Update after Barba.js transitions
         if (window.barba) {
           window.barba.hooks.after(() => {
-            updateLoginLogoutButtons();
+            updateCollaboratorLoginLogoutButtons();
           });
         }
       })();

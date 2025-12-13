@@ -40,6 +40,100 @@ require_once('includes/DataLocalizer.php');
 // Load Member class for custom member role functionality
 require_once('includes/Member.php');
 
+// Load Collaborator class for custom collaborator role functionality
+require_once('includes/Collaborator.php');
+
+// Load Gravity Form Manager for intake form functionality
+require_once('includes/GravityFormManager.php');
+
+// Load TGM Plugin Activation for required plugins
+require_once('includes/required-plugins.php');
+
+/**
+ * Prevent deactivation of required plugins
+ *
+ * This filter removes the "Deactivate" link for required plugins
+ * while the Elite Enterprise theme is active.
+ */
+add_filter('plugin_action_links', 'elite_enterprise_prevent_plugin_deactivation', 10, 4);
+function elite_enterprise_prevent_plugin_deactivation($actions, $plugin_file, $plugin_data, $context)
+{
+	// List of required plugin slugs that cannot be deactivated
+	$required_plugins = array(
+		'elementor/elementor.php',
+		'elementor-pro/elementor-pro.php',
+		'advanced-custom-fields-pro/acf.php',
+		'gravityforms/gravityforms.php',
+	);
+
+	// If this is a required plugin, remove the deactivate link
+	if (in_array($plugin_file, $required_plugins)) {
+		unset($actions['deactivate']);
+		// Add a notice explaining why it can't be deactivated
+		$actions['required'] = '<span style="color: #d63638;">Required by Elite Enterprise Theme</span>';
+	}
+
+	return $actions;
+}
+
+/**
+ * Prevent bulk deactivation of required plugins
+ */
+add_filter('bulk_actions-plugins', 'elite_enterprise_prevent_bulk_deactivation');
+function elite_enterprise_prevent_bulk_deactivation($actions)
+{
+	// We can't selectively prevent bulk actions, so we'll handle it in the handler
+	return $actions;
+}
+
+/**
+ * Intercept plugin deactivation attempts
+ */
+add_action('admin_init', 'elite_enterprise_block_plugin_deactivation');
+function elite_enterprise_block_plugin_deactivation()
+{
+	// Required plugin slugs
+	$required_plugins = array(
+		'elementor/elementor.php',
+		'elementor-pro/elementor-pro.php',
+		'advanced-custom-fields-pro/acf.php',
+		'gravityforms/gravityforms.php',
+	);
+
+	// Check if someone is trying to deactivate a required plugin
+	if (isset($_GET['action']) && $_GET['action'] === 'deactivate' && isset($_GET['plugin'])) {
+		$plugin = $_GET['plugin'];
+		if (in_array($plugin, $required_plugins)) {
+			wp_die(
+				'<h1>Plugin Deactivation Prevented</h1>' .
+					'<p><strong>' . esc_html($plugin) . '</strong> is required by the Elite Enterprise theme and cannot be deactivated.</p>' .
+					'<p>If you need to deactivate this plugin, please switch to a different theme first.</p>' .
+					'<p><a href="' . admin_url('plugins.php') . '" class="button button-primary">Return to Plugins</a></p>',
+				'Plugin Required',
+				array('response' => 403, 'back_link' => true)
+			);
+		}
+	}
+
+	// Check for bulk deactivation
+	if (isset($_POST['action']) && ($_POST['action'] === 'deactivate-selected' || $_POST['action2'] === 'deactivate-selected')) {
+		if (isset($_POST['checked']) && is_array($_POST['checked'])) {
+			$blocked_plugins = array_intersect($_POST['checked'], $required_plugins);
+			if (!empty($blocked_plugins)) {
+				wp_die(
+					'<h1>Bulk Plugin Deactivation Prevented</h1>' .
+						'<p>The following plugins are required by the Elite Enterprise theme and cannot be deactivated:</p>' .
+						'<ul><li>' . implode('</li><li>', array_map('esc_html', $blocked_plugins)) . '</li></ul>' .
+						'<p>If you need to deactivate these plugins, please switch to a different theme first.</p>' .
+						'<p><a href="' . admin_url('plugins.php') . '" class="button button-primary">Return to Plugins</a></p>',
+					'Plugins Required',
+					array('response' => 403, 'back_link' => true)
+				);
+			}
+		}
+	}
+}
+
 // Disable wp-auth-check on frontend only (not in editor/admin)
 add_action('wp_enqueue_scripts', function () {
 	if (!is_admin() && !defined('ELEMENTOR_VERSION')) {
